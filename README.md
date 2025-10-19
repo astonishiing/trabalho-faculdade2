@@ -37,9 +37,3 @@ npx playwright show-report
 - `dist/extension.zip` — artefato para release.
 
 ---
-
-Se quiser, posso:  
-- Ajustar os testes para interagir com o popup/options da sua extensão (posso inspecionar `manifest.json` e arquivos `src/` para criar seletores reais).  
-- Fazer commits no repositório local (se você fornecer instruções) ou gerar um novo ZIP com as alterações (já fiz isso).  
-
-Link para download do ZIP gerado com os arquivos adicionados está abaixo.
