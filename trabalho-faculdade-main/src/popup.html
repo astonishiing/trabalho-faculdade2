@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quick Notes & Reminders</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<header>
+  <img src="../icons/icon-32.png" alt="logo" />
+  <h1>Quick Notes</h1>
+</header>
+
+
+<section class="new-note">
+  <textarea id="note" rows="3" placeholder="Escreva uma nota…"></textarea>
+  <div class="row">
+    <button id="add">Adicionar</button>
+    <button id="clear">Limpar tudo</button>
+  </div>
+</section>
+
+
+<section class="reminder">
+  <h2>Lembrete</h2>
+  <input id="reminder-text" type="text" placeholder="Título do lembrete" />
+  <input id="reminder-min" type="number" min="1" step="1" placeholder="Minutos" />
+  <button id="create-reminder">Criar lembrete</button>
+</section>
+
+
+<section>
+  <h2>Minhas notas</h2>
+  <ul id="list"></ul>
+</section>
+
+
+<footer>
+  <a href="https://github.com/SEU-USUARIO/quick-notes-reminders" target="_blank" rel="noreferrer">Código-fonte</a>
+</footer>
+
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quick Notes & Reminders – Demo</title>
+  <style>
+      * {
+          box-sizing: border-box
+      }
+
+      body {
+          font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+          margin: 0;
+          max-width: 720px;
+          padding: 20px
+      }
+
+      header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 12px
+      }
+
+      header h1 {
+          font-size: 20px;
+          margin: 0
+      }
+
+      .new-note textarea {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          resize: vertical
+      }
+
+      .row {
+          display: flex;
+          gap: 8px;
+          margin-top: 8px
+      }
+
+      button {
+          padding: 8px 10px;
+          border: 0;
+          border-radius: 8px;
+          background: #3b82f6;
+          color: #fff;
+          cursor: pointer
+      }
+
+      button#clear {
+          background: #ef4444
+      }
+
+      section {
+          padding: 12px 0;
+          border-bottom: 1px solid #f1f1f1
+      }
+
+      h2 {
+          font-size: 16px;
+          margin: 0 0 8px
+      }
+
+      input {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          margin-bottom: 8px
+      }
+
+      ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: grid;
+          gap: 8px
+      }
+
+      li {
+          display: grid;
+          grid-template-columns:1fr auto;
+          align-items: start;
+          gap: 8px;
+          padding: 8px;
+          border: 1px solid #eee;
+          border-radius: 10px
+      }
+
+      li button {
+          background: #6b7280
+      }
+
+      footer {
+          font-size: 12px;
+          margin-top: 16px
+      }
+
+      a {
+          color: #3b82f6;
+          text-decoration: none
+      }
+  </style>
+</head>
+<body>
+<header>
+  <img src="../icons/icon-32.png" alt="logo" />
+  <h1>Quick Notes – Demo</h1>
+</header>
+
+<section class="new-note">
+  <textarea id="note" rows="3" placeholder="Escreva uma nota…"></textarea>
+  <div class="row">
+    <button id="add">Adicionar</button>
+    <button id="clear">Limpar tudo</button>
+  </div>
+</section>
+
+<section class="reminder">
+  <h2>Lembrete (demo)</h2>
+  <input id="reminder-text" type="text" placeholder="Título do lembrete" />
+  <input id="reminder-sec" type="number" min="1" step="1" placeholder="Segundos (demo)" />
+  <button id="create-reminder">Criar lembrete</button>
+</section>
+
+<section>
+  <h2>Minhas notas</h2>
+  <ul id="list"></ul>
+</section>
+
+<footer>
+  <p>Este demo usa <code>localStorage</code>. A extensão real usa <code>chrome.storage.sync</code>,
+    <code>chrome.alarms</code> e <code>notifications</code>.</p>
+  <p><a href="https://github.com/astonishiing/trabalho-faculdade">Repositório no GitHub</a></p>
+</footer>
+
+<script>
+  const KEY = 'demo:notes';
+  const els = {
+    note: document.getElementById('note'),
+    add: document.getElementById('add'),
+    clear: document.getElementById('clear'),
+    list: document.getElementById('list'),
+    rText: document.getElementById('reminder-text'),
+    rSec: document.getElementById('reminder-sec'),
+    rCreate: document.getElementById('create-reminder')
+  };
+
+  function get() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  function set(v) {
+    localStorage.setItem(KEY, JSON.stringify(v));
+  }
+
+  function render(a) {
+    els.list.innerHTML = a.map(n => `<li><span>${escape(n.text)}</span><button data-del="${n.id}">✕</button></li>`).join('');
+  }
+
+  function escape(s) {
+    const p = document.createElement('p');
+    p.appendChild(document.createTextNode(s));
+    return p.innerHTML;
+  }
+
+  function nid() {
+    return Math.random().toString(36).slice(2, 10);
+  }
+
+  els.add.onclick = () => {
+    const t = els.note.value.trim();
+    if (!t) return;
+    const a = get();
+    a.unshift({ id: nid(), text: t, createdAt: Date.now() });
+    set(a);
+    els.note.value = '';
+    render(a);
+  };
+  els.clear.onclick = () => {
+    if (confirm('Apagar todas as notas?')) {
+      set([]);
+      render([]);
+    }
+  };
+  els.list.onclick = (e) => {
+    const b = e.target.closest('button[data-del]');
+    if (!b) return;
+    const a = get().filter(n => n.id !== b.dataset.del);
+    set(a);
+    render(a);
+  };
+  els.rCreate.onclick = () => {
+    const t = (els.rText.value || 'Lembrete').trim();
+    const s = parseInt(els.rSec.value, 10);
+    if (!s || s < 1) return alert('Informe os segundos');
+    setTimeout(() => alert('⏰ ' + t), s * 1000);
+    els.rText.value = '';
+    els.rSec.value = '';
+  };
+
+  render(get());
+</script>
+</body>
+</html>
